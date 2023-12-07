@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from dotenv import dotenv_values
 
 def scroll(elem):
-    driver.execute_script("arguments[0].scrollIntoView();", msg)
+    driver.execute_script("arguments[0].scrollIntoView();", elem)
 
 def verify(by, value):
     try:
