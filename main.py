@@ -4,7 +4,20 @@ from selenium.webdriver.common.by import By
 import time
 from datetime import datetime, timedelta
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from dotenv import dotenv_values
+
+def scroll(elem):
+    driver.execute_script("arguments[0].scrollIntoView();", msg)
+
+def verify(by, value):
+    try:
+        element = WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((by, value))
+        )
+        return True
+    except:
+        return False
 
 process = dotenv_values(".env")
 
@@ -44,11 +57,12 @@ old.click()
 oldestMsg = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/section/div/div[1]/ul/li[1]/div[1]/div/div/div[1]/div')
 oldestMsg.click()
 
+
 time.sleep(500)
 
-
 '''
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/div[3]/li/div
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[88]/div
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[4]/div
 
-/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/section/div/div[1]/ul/li[2]/div[1]/div/div
-/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/section/div/div[1]/ul/li[3]/div[1]/div/div
 '''
