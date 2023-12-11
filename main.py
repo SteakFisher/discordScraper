@@ -8,6 +8,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from dotenv import dotenv_values
 import csv
+import os
+
+try:
+    os.remove("data.csv")
+except:
+    pass
+
 
 def scroll(elem):
     driver.execute_script("arguments[0].scrollIntoView();", elem)
@@ -61,16 +68,20 @@ oldestMsg = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[1]/div[1
 oldestMsg.click()
 
 i = 0
-date = ""
-user = ""
 
 data = []
+
+date = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div/div/ol/div[3]/li/div/div[1]/h3/span[2]").text
+user = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div/div/ol/div[3]/li/div/div[1]/h3/span[1]").text
+text = driver.find_element(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li/div/div[1]/div/span').text
+
+data.append([date, user, text])
 
 while True:
     try:
         i += 1
 
-        if (i % 10 == 0):
+        if (i % 5 == 0):
             file = open('data.csv', 'a', newline='')
             csv.writer(file).writerows(data)
             file.close()
@@ -81,20 +92,19 @@ while True:
                 element = driver.find_element(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]')
                 scroll(element)
 
-            dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]/span')
-            if(dateElem):
-                datetime = dateElem
-                date = datetime.text
+            textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
+            if (textElem):
+                text = textElem.text
 
-                user = "SYSTEM"
-
-                # textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]')
-                text = "You Missed a call from SteakFisher"
+                if (textElem):
+                    text = textElem.text
+                else:
+                    text = "Image/Vid/Gif"
 
                 data.append([date, user, text])
 
                 continue
-            
+
             dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/h3/span[2]')
             if (dateElem):
                 datetime = dateElem
@@ -113,16 +123,15 @@ while True:
 
                 continue
 
-            dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
-            if (dateElem):
+            dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]/span')
+            if(dateElem):
+                datetime = dateElem
+                date = datetime.text
 
-                textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
-                text = textElem.text
+                user = "SYSTEM"
 
-                if (textElem):
-                    text = textElem.text
-                else:
-                    text = "Image/Vid/Gif"
+                # textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]')
+                text = "SteakFisher Joined"
 
                 data.append([date, user, text])
 
