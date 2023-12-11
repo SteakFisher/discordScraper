@@ -5,6 +5,7 @@ import time
 from datetime import datetime, timedelta
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 from dotenv import dotenv_values
 
 def scroll(elem):
@@ -12,18 +13,16 @@ def scroll(elem):
 
 def verify(by, value):
     try:
-        element = WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((by, value))
-        )
-        return True
-    except:
+        elem = driver.find_element(by, value)
+    except NoSuchElementException:
         return False
+    return elem
 
 process = dotenv_values(".env")
 
 driver = webdriver.Chrome()
 driver.maximize_window()
-driver.implicitly_wait(500)
+driver.implicitly_wait(1)
 
 
 driver.get("https://discord.com/login")
@@ -38,8 +37,11 @@ passElem.clear()
 passElem.send_keys(process['PASSWORD'])
 passElem.send_keys(Keys.RETURN)
 
+WebDriverWait(driver, 8).until(
+    EC.presence_of_element_located((By.CLASS_NAME, 'overflow__87fe8'))
+)
+
 chatElem = driver.find_element(By.CLASS_NAME, 'overflow__87fe8')
-print(chatElem)
 
 chatElem.click()
 
@@ -57,12 +59,92 @@ old.click()
 oldestMsg = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/section/div/div[1]/ul/li[1]/div[1]/div/div/div[1]/div')
 oldestMsg.click()
 
+i = 0
+date = ""
+user = ""
 
-time.sleep(500)
+while True:
+    try:
+        i += 1
+
+        if (verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]')):
+            if (i % 25 == 0):
+                element = driver.find_element(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]')
+                scroll(element)
+
+            dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]/span')
+            if(dateElem):
+                datetime = dateElem
+                date = datetime.text
+                print(datetime.text)
+
+                user = "SYSTEM"
+                print(user)
+
+                # textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]')
+                text = "You Missed a call from SteakFisher"
+
+                print(text)
+
+                continue
+            
+            dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/h3/span[2]')
+            if (dateElem):
+                datetime = dateElem
+                print(datetime.text)
+                date = datetime.text
+
+                userElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/h3/span[1]/span')
+                user = userElem.text
+                print(userElem.text)
+
+                textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
+                if (textElem):
+                    text = textElem.text
+                else:
+                    text = "Image/Vid/Gif"
+
+                print(text)
+
+                continue
+
+            dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
+            if (dateElem):
+                print(date)
+                print(user)
+
+                # textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span[1]')
+                # text = textElem.text
+
+                textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
+                text = textElem.text
+
+                if (textElem):
+                    text = textElem.text
+                else:
+                    text = "Image/Vid/Gif"
+
+                print(text)
+
+                continue
+
+            else:
+                continue
+    except:
+        break
+
+time.sleep(1500)
 
 '''
 /html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/div[3]/li/div
 /html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[88]/div
 /html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[4]/div
 
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[1]/div
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[2]/div
+
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div/div/ol/li[6]/div/div[1]/div/span
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div/div/ol/li[7]/div/div[1]/div/span
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div/div/ol/li[12]/div/div[1]/div/span
+/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div/div/ol/li[13]/div/div[1]/div/span
 '''
