@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from dotenv import dotenv_values
+import csv
 
 def scroll(elem):
     driver.execute_script("arguments[0].scrollIntoView();", elem)
@@ -63,9 +64,17 @@ i = 0
 date = ""
 user = ""
 
+data = []
+
 while True:
     try:
         i += 1
+
+        if (i % 10 == 0):
+            file = open('data.csv', 'a', newline='')
+            csv.writer(file).writerows(data)
+            file.close()
+            data = []
 
         if (verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]')):
             if (i % 25 == 0):
@@ -76,27 +85,23 @@ while True:
             if(dateElem):
                 datetime = dateElem
                 date = datetime.text
-                print(datetime.text)
 
                 user = "SYSTEM"
-                print(user)
 
                 # textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/div/div[2]')
                 text = "You Missed a call from SteakFisher"
 
-                print(text)
+                data.append([date, user, text])
 
                 continue
             
             dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/h3/span[2]')
             if (dateElem):
                 datetime = dateElem
-                print(datetime.text)
                 date = datetime.text
 
                 userElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/h3/span[1]/span')
                 user = userElem.text
-                print(userElem.text)
 
                 textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
                 if (textElem):
@@ -104,17 +109,12 @@ while True:
                 else:
                     text = "Image/Vid/Gif"
 
-                print(text)
+                data.append([date, user, text])
 
                 continue
 
             dateElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
             if (dateElem):
-                print(date)
-                print(user)
-
-                # textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span[1]')
-                # text = textElem.text
 
                 textElem = verify(By.XPATH, f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/main/div[1]/div[1]/div/ol/li[{i}]/div/div[1]/div/span')
                 text = textElem.text
@@ -124,7 +124,7 @@ while True:
                 else:
                     text = "Image/Vid/Gif"
 
-                print(text)
+                data.append([date, user, text])
 
                 continue
 
@@ -132,6 +132,11 @@ while True:
                 continue
     except:
         break
+
+file = open('data.csv', 'a', newline='')
+csv.writer(file).writerows(data)
+file.close()
+data = []
 
 time.sleep(1500)
 
